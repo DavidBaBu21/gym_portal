@@ -2,42 +2,26 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Rutinas de la Semana</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <title>Rutina</title>
 </head>
 <body>
-  <h1>📅 Rutinas de la Semana</h1>
-  <div class="rutinas-container">
-  {% for rutina in rutinas %}
-    <div class="rutina-card">
-      <h2>{{ rutina.nombre }} ({{ rutina.dia_semana|capitalize }})</h2>
+  <h1>📋 Rutina de {{ dia_elegido|capitalize }}</h1>
+  <h2>{{ rutina.nombre }}</h2>
 
-      {% set grupos = {} %}
-      {% for er in rutina.ejercicios %}
-        {% set grupo = er.ejercicio.grupo.nombre %}
-        {% if grupo not in grupos %}
-          {% set _ = grupos.update({grupo: []}) %}
-        {% endif %}
-        {% set _ = grupos[grupo].append(er.ejercicio) %}
+  <!-- Formulario para elegir día -->
+  <form method="POST">
+    <label for="dia">Elige un día:</label>
+    <select name="dia" id="dia">
+      {% for d in dias %}
+        <option value="{{ d }}" {% if d == dia_elegido %}selected{% endif %}>{{ d|capitalize }}</option>
       {% endfor %}
+    </select>
+    <button type="submit">Ver rutina</button>
+  </form>
 
-      {% for grupo, ejercicios in grupos.items() %}
-        <h3>💪 {{ grupo|capitalize }}</h3>
-        <div class="musculos">
-          <img src="/static/musculos/{{ grupo }}.png" alt="{{ grupo }}" class="musculo-icon">
-        </div>
-        <ul>
-          {% for ejercicio in ejercicios %}
-            <li>
-              <img src="/static/ejercicios/{{ ejercicio.archivo }}" alt="{{ ejercicio.nombre }}" class="ejercicio-icon">
-              {{ ejercicio.nombre }} — {{ ejercicio.repeticiones }}
-            </li>
-          {% endfor %}
-        </ul>
-      {% endfor %}
-    </div>
+  <!-- Mostrar ejercicios asignados -->
+  {% for er in rutina.ejercicios_rutina %}
+    <p>{{ er.ejercicio.nombre }} - {{ er.series }}x{{ er.repeticiones }} (Descanso: {{ er.descanso }}s)</p>
   {% endfor %}
-</div>
-
 </body>
 </html>
