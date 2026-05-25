@@ -405,6 +405,11 @@ def editar_rutina(rutina_id):
 
     db.session.commit()
     return redirect(url_for("coach_usuario", usuario_id=rutina.usuario_id))
+@app.route("/importar")
+def importar():
+    from import_data import import_sql
+    import_sql()
+    return "Datos importados correctamente 🚀"
 
 
 if __name__ == "__main__":
