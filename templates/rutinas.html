@@ -47,6 +47,11 @@
           {% endfor %}
         </ul>
       {% endfor %}
+
+      <!-- Botón para iniciar rutina -->
+      <form action="/iniciar_rutina/{{ rutina.id }}" method="get">
+        <button type="submit">▶️ Iniciar esta rutina</button>
+      </form>
     </div>
   {% endfor %}
   </div>
