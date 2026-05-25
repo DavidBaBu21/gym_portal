@@ -8,17 +8,6 @@
 <body>
   <h1>📅 Rutinas de la Semana</h1>
 
-  <!-- Selector de día -->
-  <form method="POST">
-    <label for="dia">Elige un día:</label>
-    <select name="dia" id="dia">
-      {% for d in dias %}
-        <option value="{{ d }}" {% if d == dia_elegido %}selected{% endif %}>{{ d|capitalize }}</option>
-      {% endfor %}
-    </select>
-    <button type="submit">Filtrar</button>
-  </form>
-
   <div class="rutinas-container">
   {% for rutina in rutinas %}
     <div class="rutina-card">
@@ -47,11 +36,6 @@
           {% endfor %}
         </ul>
       {% endfor %}
-
-      <!-- Botón para iniciar rutina -->
-      <form action="/iniciar_rutina/{{ rutina.id }}" method="get">
-        <button type="submit">▶️ Iniciar esta rutina</button>
-      </form>
     </div>
   {% endfor %}
   </div>
