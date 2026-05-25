@@ -123,6 +123,7 @@ def rutinas(usuario):
     return render_template("rutinas.html", rutinas=rutinas, dias=dias, dia_elegido=dia_elegido)
 
 
+
 @app.route("/iniciar_rutina/<int:rutina_id>")
 def iniciar_rutina(rutina_id):
     rutina = Rutina.query.get(rutina_id)
