@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date, datetime
 from flask_migrate import Migrate
-
+from app import db, Usuario, Rutina  # Ajusta según tu estructura de modelos
 
 
 app = Flask(__name__)
@@ -103,10 +103,8 @@ def registro():
 def menu(usuario):
     return render_template("menu.html", usuario=usuario)
 
-from flask import request
 
-from flask import render_template, request
-from datetime import datetime
+
 
 @app.route("/rutinas/<usuario>", methods=["GET", "POST"])
 def rutinas(usuario):
@@ -120,11 +118,20 @@ def rutinas(usuario):
         dia_elegido = request.form.get("dia")
         rutinas = Rutina.query.filter_by(usuario_id=user.id, dia_semana=dia_elegido).all()
     else:
-        # Por defecto muestra todas las rutinas
         rutinas = Rutina.query.filter_by(usuario_id=user.id).all()
         dia_elegido = None
 
     return render_template("rutinas.html", rutinas=rutinas, dias=dias, dia_elegido=dia_elegido)
+
+
+@app.route("/iniciar_rutina/<int:rutina_id>")
+def iniciar_rutina(rutina_id):
+    rutina = Rutina.query.get(rutina_id)
+    if not rutina:
+        return "Rutina no encontrada"
+
+    return render_template("iniciar_rutina.html", rutina=rutina)
+
 
 
 
