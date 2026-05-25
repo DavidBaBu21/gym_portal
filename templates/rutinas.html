@@ -2,13 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Rutina</title>
+  <title>Rutinas de la Semana</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>📋 Rutina de {{ dia_elegido|capitalize }}</h1>
-  <h2>{{ rutina.nombre }}</h2>
+  <h1>📅 Rutinas de la Semana</h1>
 
-  <!-- Formulario para elegir día -->
+  <!-- Selector de día -->
   <form method="POST">
     <label for="dia">Elige un día:</label>
     <select name="dia" id="dia">
@@ -16,12 +16,39 @@
         <option value="{{ d }}" {% if d == dia_elegido %}selected{% endif %}>{{ d|capitalize }}</option>
       {% endfor %}
     </select>
-    <button type="submit">Ver rutina</button>
+    <button type="submit">Filtrar</button>
   </form>
 
-  <!-- Mostrar ejercicios asignados -->
-  {% for er in rutina.ejercicios_rutina %}
-    <p>{{ er.ejercicio.nombre }} - {{ er.series }}x{{ er.repeticiones }} (Descanso: {{ er.descanso }}s)</p>
+  <div class="rutinas-container">
+  {% for rutina in rutinas %}
+    <div class="rutina-card">
+      <h2>{{ rutina.nombre }} ({{ rutina.dia_semana|capitalize }})</h2>
+
+      {% set grupos = {} %}
+      {% for er in rutina.ejercicios_rutina %}
+        {% set grupo = er.ejercicio.grupo.nombre %}
+        {% if grupo not in grupos %}
+          {% set _ = grupos.update({grupo: []}) %}
+        {% endif %}
+        {% set _ = grupos[grupo].append(er) %}
+      {% endfor %}
+
+      {% for grupo, ejercicios in grupos.items() %}
+        <h3>💪 {{ grupo|capitalize }}</h3>
+        <div class="musculos">
+          <img src="/static/musculos/{{ grupo }}.png" alt="{{ grupo }}" class="musculo-icon">
+        </div>
+        <ul>
+          {% for er in ejercicios %}
+            <li>
+              <img src="/static/ejercicios/{{ er.ejercicio.archivo }}" alt="{{ er.ejercicio.nombre }}" class="ejercicio-icon">
+              {{ er.ejercicio.nombre }} — {{ er.series }}x{{ er.repeticiones }} (Descanso: {{ er.descanso }}s)
+            </li>
+          {% endfor %}
+        </ul>
+      {% endfor %}
+    </div>
   {% endfor %}
+  </div>
 </body>
 </html>
