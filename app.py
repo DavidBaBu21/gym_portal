@@ -105,28 +105,27 @@ def menu(usuario):
 
 from flask import request
 
-@app.route("/rutina/<usuario>", methods=["GET", "POST"])
-def rutina(usuario):
-    # Obtener usuario
+from flask import render_template, request
+from datetime import datetime
+
+@app.route("/rutinas/<usuario>", methods=["GET", "POST"])
+def rutinas(usuario):
     user = Usuario.query.filter_by(usuario=usuario).first()
     if not user:
         return "Usuario no encontrado"
 
-    # Lista de días
     dias = ["lunes","martes","miércoles","jueves","viernes","sábado","domingo"]
 
     if request.method == "POST":
         dia_elegido = request.form.get("dia")
+        rutinas = Rutina.query.filter_by(usuario_id=user.id, dia_semana=dia_elegido).all()
     else:
-        # Por defecto muestra el día actual
-        dia_elegido = dias[datetime.today().weekday()]
+        # Por defecto muestra todas las rutinas
+        rutinas = Rutina.query.filter_by(usuario_id=user.id).all()
+        dia_elegido = None
 
-    rutina = Rutina.query.filter_by(usuario_id=user.id, dia_semana=dia_elegido).first()
+    return render_template("rutinas.html", rutinas=rutinas, dias=dias, dia_elegido=dia_elegido)
 
-    if not rutina:
-        return f"No hay rutina asignada para {dia_elegido}"
-
-    return render_template("rutina.html", rutina=rutina, dias=dias, dia_elegido=dia_elegido)
 
 
 @app.route("/rutina_hoy/<usuario>")
