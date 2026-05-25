@@ -134,6 +134,37 @@ CREATE TABLE ejercicio_rutina (
     calentamiento BOOLEAN DEFAULT FALSE NOT NULL
 );
 
+INSERT INTO ejercicio_rutina (id,rutina_id,ejercicio_id,series,repeticiones,descanso,calentamiento) VALUES
+(7,3,1,4,10,60,FALSE),
+(8,3,2,4,10,60,FALSE),
+(9,3,3,4,12,60,FALSE),
+(10,3,11,4,10,60,FALSE),
+(11,3,12,4,12,60,FALSE),
+(12,2,7,4,10,60,FALSE),
+(13,2,8,4,12,60,FALSE),
+(14,2,16,3,10,60,FALSE),
+(15,2,17,3,12,60,FALSE),
+(16,2,18,3,15,60,FALSE),
+(17,2,22,4,12,60,FALSE),
+(18,2,23,4,12,60,FALSE),
+(19,2,56,3,12,60,FALSE),
+(20,2,57,3,10,60,FALSE),
+(21,2,58,3,10,60,FALSE),
+(22,2,59,3,12,60,FALSE),
+(23,4,41,3,10,60,FALSE),
+(24,4,42,3,12,60,FALSE),
+(25,4,44,3,10,60,FALSE),
+(26,4,49,3,10,60,FALSE),
+(27,4,60,3,12,60,FALSE),
+(28,4,61,3,12,60,FALSE),
+(29,4,62,3,12,60,FALSE),
+(30,5,1,3,10,60,FALSE),
+(31,5,2,3,10,60,FALSE),
+(32,5,3,3,10,60,FALSE),
+(33,5,4,3,10,60,FALSE),
+(34,5,24,3,10,60,FALSE),
+(35,5,25,3,10,60,FALSE);
+
 
 CREATE TABLE alembic_version (
     version_num VARCHAR(32) PRIMARY KEY
