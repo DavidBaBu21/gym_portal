@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date, datetime
 from flask_migrate import Migrate
-from app import db, Usuario, Rutina  # Ajusta según tu estructura de modelos
 
 
 app = Flask(__name__)
