@@ -104,37 +104,6 @@ def menu(usuario):
 
 
 
-
-@app.route("/rutinas/<usuario>", methods=["GET", "POST"])
-def rutinas(usuario):
-    user = Usuario.query.filter_by(usuario=usuario).first()
-    if not user:
-        return "Usuario no encontrado"
-
-    dias = ["lunes","martes","miércoles","jueves","viernes","sábado","domingo"]
-
-    if request.method == "POST":
-        dia_elegido = request.form.get("dia")
-        rutinas = Rutina.query.filter_by(usuario_id=user.id, dia_semana=dia_elegido).all()
-    else:
-        rutinas = Rutina.query.filter_by(usuario_id=user.id).all()
-        dia_elegido = None
-
-    return render_template("rutinas.html", rutinas=rutinas, dias=dias, dia_elegido=dia_elegido)
-
-
-
-@app.route("/iniciar_rutina/<int:rutina_id>")
-def iniciar_rutina(rutina_id):
-    rutina = Rutina.query.get(rutina_id)
-    if not rutina:
-        return "Rutina no encontrada"
-
-    return render_template("iniciar_rutina.html", rutina=rutina)
-
-
-
-
 @app.route("/rutinas/<usuario>")
 def rutinas(usuario):
     user = Usuario.query.filter_by(usuario=usuario).first()
@@ -147,7 +116,33 @@ def rutinas(usuario):
         return "No hay rutinas asignadas"
 
     return render_template("rutinas.html", rutinas=rutinas)
+    
+@app.route("/iniciar_rutina/<usuario>/<int:rutina_id>")
+def iniciar_rutina(usuario, rutina_id):
+    user = Usuario.query.filter_by(usuario=usuario).first()
+    if not user:
+        return "Usuario no encontrado"
 
+    rutina = Rutina.query.filter_by(id=rutina_id, usuario_id=user.id).first()
+    if not rutina:
+        return "Rutina no encontrada"
+
+    return render_template("iniciar_rutina.html", rutina=rutina)
+
+@app.route("/rutina_hoy/<usuario>")
+def rutina_hoy(usuario):
+    user = Usuario.query.filter_by(usuario=usuario).first()
+    if not user:
+        return "Usuario no encontrado"
+
+    dias = ["lunes","martes","miércoles","jueves","viernes","sábado","domingo"]
+    dia_actual = dias[datetime.today().weekday()]
+
+    rutina = Rutina.query.filter_by(usuario_id=user.id, dia_semana=dia_actual).first()
+    if not rutina:
+        return f"No hay rutina asignada para {dia_actual}"
+
+    return render_template("rutina_hoy.html", rutina=rutina)
 
 @app.route("/progreso")
 def progreso():
