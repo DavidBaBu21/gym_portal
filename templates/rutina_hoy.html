@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Rutina de Hoy</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/script.js"></script>
+</head>
+<body>
+  <h1>📋 Rutina de {{ rutina.dia_semana|capitalize }}</h1>
+
+  <div class="rutina-entrenamiento">
+    <div class="rutina-card">
+      <h2>{{ rutina.nombre }} ({{ rutina.dia_semana|capitalize }})</h2>
+
+      {% set grupos = {} %}
+      {% for er in rutina.ejercicios %}
+        {% set grupo = er.ejercicio.grupo.nombre %}
+        {% if grupo not in grupos %}
+          {% set _ = grupos.update({grupo: []}) %}
+        {% endif %}
+        {% set _ = grupos[grupo].append(er) %}
+      {% endfor %}
+
+      {% for grupo, ejercicios in grupos.items() %}
+        <!-- Título del grupo muscular con clase dinámica -->
+        <h3 class="grupo-titulo grupo-{{ grupo|lower }}">💪 {{ grupo|capitalize }}</h3>
+        <div class="musculos">
+          <img src="/static/musculos/{{ grupo }}.png" alt="{{ grupo }}" class="musculo-icon">
+        </div>
+
+        {% for er in ejercicios %}
+          <!-- Bloque de cada ejercicio -->
+          <div class="ejercicio-bloque">
+            <h4 class="ejercicio-titulo">{{ er.ejercicio.nombre }}</h4>
+            <div class="ejercicio">
+              <img src="/static/ejercicios/{{ er.ejercicio.archivo }}" 
+                   alt="{{ er.ejercicio.nombre }}" 
+                   class="ejercicio-icon">
+            </div>
+            <p>{{ er.series }} series x {{ er.repeticiones }} reps</p>
+
+            {% for s in range(er.series) %}
+              <div class="serie" onclick="finalizarSerie(this, '{{ er.descanso }}')">
+                Serie {{ s+1 }} — {{ er.repeticiones }} reps
+                <div class="descanso-bar"></div>
+                <div class="descanso-text"></div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      {% endfor %}
+
+      <button onclick="finalizarEjercicio()">Finalizar rutina</button>
+    </div>
+  </div>
+</body>
+</html>

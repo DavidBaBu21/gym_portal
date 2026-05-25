@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Coach - Rutinas de {{ usuario.usuario }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="{{ url_for('static', filename='coach.js') }}" defer></script>
+</head>
+<body>
+  <h1>Rutinas de {{ usuario.usuario }}</h1>
+
+  <h2>Asignar nueva rutina</h2>
+  <form method="POST">
+    <label>Nombre de la rutina:</label>
+    <input type="text" name="nombre" required>
+
+    <label>Día de la semana:</label>
+    <select name="dia">
+      {% for d in dias %}
+        <option value="{{ d }}">{{ d|capitalize }}</option>
+      {% endfor %}
+    </select>
+
+    <h3>Ejercicios disponibles</h3>
+    <input type="text" id="buscador" placeholder="Buscar ejercicio...">
+
+    <div class="ejercicios-lista" id="lista-ejercicios">
+      {% for ejercicio in ejercicios %}
+        <div class="ejercicio-item">
+          <input type="checkbox" name="ejercicios" value="{{ ejercicio.id }}">
+          <img src="/static/ejercicios/{{ ejercicio.archivo }}" alt="{{ ejercicio.nombre }}" class="ejercicio-icon">
+          {{ ejercicio.nombre }}
+
+          <div class="extra-fields">
+            <label>Series:</label>
+            <input type="number" name="series_{{ ejercicio.id }}" value="3" min="1">
+
+            <label>Reps:</label>
+            <input type="number" name="reps_{{ ejercicio.id }}" value="10" min="1">
+
+            <label>Descanso (seg):</label>
+            <input type="number" name="descanso_{{ ejercicio.id }}" value="60" min="10">
+
+            <label>Calentamiento:</label>
+            <input type="checkbox" name="calentamiento_{{ ejercicio.id }}">
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <button type="submit">Guardar rutina</button>
+  </form>
+
+  <h2>Rutinas asignadas</h2>
+  <div class="rutinas-grid">
+    {% for rutina in rutinas %}
+      <div class="rutina-card" id="card-{{ rutina.id }}">
+        <h3>{{ rutina.nombre }} ({{ rutina.dia_semana|capitalize }})</h3>
+        <ul>
+          {% for er in rutina.ejercicios %}
+            <li>
+              <img src="/static/ejercicios/{{ er.ejercicio.archivo }}" alt="{{ er.ejercicio.nombre }}" class="ejercicio-icon">
+              {{ er.ejercicio.nombre }} –
+              {{ er.series }}x{{ er.repeticiones }},
+              descanso {{ er.descanso }}s,
+              {% if er.calentamiento %}calentamiento{% else %}normal{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+
+        <!-- Botón editar -->
+        <button type="button" class="btn-edit" onclick="toggleEdit('{{ rutina.id }}')">✏️ Editar</button>
+
+        <!-- Botón eliminar -->
+        <form method="POST" action="/coach/eliminar_rutina/{{ rutina.id }}" style="display:inline;">
+          <button type="submit" class="btn-delete">🗑️ Eliminar</button>
+        </form>
+
+        <!-- Formulario edición -->
+        <form method="POST" action="/coach/editar_rutina/{{ rutina.id }}" class="edit-form" id="edit-{{ rutina.id }}">
+          <label>Nombre:</label>
+          <input type="text" name="nombre" value="{{ rutina.nombre }}" required>
+
+          <label>Día:</label>
+          <select name="dia">
+            {% for d in dias %}
+              <option value="{{ d }}" {% if rutina.dia_semana == d %}selected{% endif %}>{{ d|capitalize }}</option>
+            {% endfor %}
+          </select>
+
+          <h4>Ejercicios</h4>
+          <input type="text" id="buscador-{{ rutina.id }}" placeholder="Buscar ejercicio..." onkeyup="filtrarEjerciciosRutina('{{ rutina.id }}')">
+
+          <div class="ejercicios-lista" id="lista-{{ rutina.id }}">
+            {% for ejercicio in ejercicios %}
+              {% set asignado = rutina.ejercicios|selectattr("ejercicio.id","equalto",ejercicio.id)|first %}
+              <div class="ejercicio-item">
+                <input type="checkbox" name="ejercicios" value="{{ ejercicio.id }}"
+                       {% if asignado %}checked{% endif %}>
+                <img src="/static/ejercicios/{{ ejercicio.archivo }}" alt="{{ ejercicio.nombre }}" class="ejercicio-icon">
+                {{ ejercicio.nombre }}
+
+                <div class="extra-fields">
+                  <label>Series:</label>
+                  <input type="number" name="series_{{ ejercicio.id }}" value="{{ asignado.series if asignado else 3 }}" min="1">
+
+                  <label>Reps:</label>
+                  <input type="number" name="reps_{{ ejercicio.id }}" value="{{ asignado.repeticiones if asignado else 10 }}" min="1">
+
+                  <label>Descanso (seg):</label>
+                  <input type="number" name="descanso_{{ ejercicio.id }}" value="{{ asignado.descanso if asignado else 60 }}" min="10">
+
+                  <label>Calentamiento:</label>
+                  <input type="checkbox" name="calentamiento_{{ ejercicio.id }}" {% if asignado and asignado.calentamiento %}checked{% endif %}>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <button type="submit">💾 Guardar cambios</button>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    function toggleEdit(rutinaId) {
+      const card = document.getElementById('card-' + rutinaId);
+      const form = document.getElementById('edit-' + rutinaId);
+      card.classList.toggle('expanded');
+      form.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

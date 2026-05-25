@@ -1,0 +1,7 @@
+<h1>💪 Ejercicios</h1>
+{% for ejercicio in ejercicios %}
+  <div class="exercise-card">
+    <h2>{{ ejercicio.nombre }}</h2>
+    <p>Repeticiones: {{ ejercicio.repeticiones }}</p>
+  </div>
+{% endfor %}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Progreso - Gym Portal</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>📈 Progreso</h1>
+    <canvas id="graficaProgreso" width="400" height="200"></canvas>
+
+    <!-- Inyectamos los datos como JSON válido -->
+    <script id="datos-progreso" type="application/json">
+        {{ progresos|tojson }}
+    </script>
+
+    <script>
+        const ctx = document.getElementById('graficaProgreso');
+        // Leemos el JSON desde el script oculto
+        const datos = JSON.parse(document.getElementById('datos-progreso').textContent);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: datos.map(p => p.fecha),
+                datasets: [{
+                    label: 'Peso levantado (kg)',
+                    data: datos.map(p => p.peso_levantado),
+                    borderColor: '#f1c40f',
+                    backgroundColor: 'rgba(241,196,15,0.2)',
+                    fill: true
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

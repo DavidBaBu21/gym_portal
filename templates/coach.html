@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Coach - Usuarios</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>👨‍🏫 Panel del Coach</h1>
+  <ul>
+    {% for usuario in usuarios %}
+      <li>
+        {{ usuario.usuario }}
+        <a href="/coach/{{ usuario.id }}">Asignar rutinas</a>
+      </li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

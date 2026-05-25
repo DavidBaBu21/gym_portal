@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Rutinas de la Semana</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>📅 Rutinas de la Semana</h1>
+  <div class="rutinas-container">
+  {% for rutina in rutinas %}
+    <div class="rutina-card">
+      <h2>{{ rutina.nombre }} ({{ rutina.dia_semana|capitalize }})</h2>
+
+      {% set grupos = {} %}
+      {% for er in rutina.ejercicios %}
+        {% set grupo = er.ejercicio.grupo.nombre %}
+        {% if grupo not in grupos %}
+          {% set _ = grupos.update({grupo: []}) %}
+        {% endif %}
+        {% set _ = grupos[grupo].append(er.ejercicio) %}
+      {% endfor %}
+
+      {% for grupo, ejercicios in grupos.items() %}
+        <h3>💪 {{ grupo|capitalize }}</h3>
+        <div class="musculos">
+          <img src="/static/musculos/{{ grupo }}.png" alt="{{ grupo }}" class="musculo-icon">
+        </div>
+        <ul>
+          {% for ejercicio in ejercicios %}
+            <li>
+              <img src="/static/ejercicios/{{ ejercicio.archivo }}" alt="{{ ejercicio.nombre }}" class="ejercicio-icon">
+              {{ ejercicio.nombre }} — {{ ejercicio.repeticiones }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
+
+</body>
+</html>
