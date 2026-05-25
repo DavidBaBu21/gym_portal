@@ -103,10 +103,31 @@ def registro():
 def menu(usuario):
     return render_template("menu.html", usuario=usuario)
 
-@app.route("/rutinas")
-def rutinas():
-    rutinas = Rutina.query.all()
-    return render_template("rutinas.html", rutinas=rutinas)
+from flask import request
+
+@app.route("/rutina/<usuario>", methods=["GET", "POST"])
+def rutina(usuario):
+    # Obtener usuario
+    user = Usuario.query.filter_by(usuario=usuario).first()
+    if not user:
+        return "Usuario no encontrado"
+
+    # Lista de días
+    dias = ["lunes","martes","miércoles","jueves","viernes","sábado","domingo"]
+
+    if request.method == "POST":
+        dia_elegido = request.form.get("dia")
+    else:
+        # Por defecto muestra el día actual
+        dia_elegido = dias[datetime.today().weekday()]
+
+    rutina = Rutina.query.filter_by(usuario_id=user.id, dia_semana=dia_elegido).first()
+
+    if not rutina:
+        return f"No hay rutina asignada para {dia_elegido}"
+
+    return render_template("rutina.html", rutina=rutina, dias=dias, dia_elegido=dia_elegido)
+
 
 @app.route("/rutina_hoy/<usuario>")
 def rutina_hoy(usuario):
