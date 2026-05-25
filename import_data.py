@@ -2,7 +2,7 @@ from app import db
 from sqlalchemy import text
 
 def import_sql():
-    with open("backup.sql", "r", encoding="utf-8") as f:
+    with open("backup_postgres.sql", "r", encoding="utf-8") as f:
         sql_commands = f.read().split(";\n")
         with db.engine.begin() as conn:  # begin() maneja transacciones
             for command in sql_commands:
