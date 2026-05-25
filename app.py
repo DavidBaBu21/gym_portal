@@ -110,12 +110,12 @@ def rutinas(usuario):
     if not user:
         return "Usuario no encontrado"
 
-    # Traer todas las rutinas del usuario
     rutinas = Rutina.query.filter_by(usuario_id=user.id).all()
     if not rutinas:
         return "No hay rutinas asignadas"
 
     return render_template("rutinas.html", rutinas=rutinas)
+
     
 @app.route("/iniciar_rutina/<usuario>/<int:rutina_id>")
 def iniciar_rutina(usuario, rutina_id):
