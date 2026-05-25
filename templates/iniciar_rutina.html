@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Iniciar Rutina</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>🏋️ {{ rutina.nombre }} ({{ rutina.dia_semana|capitalize }})</h1>
+
+  {% for er in rutina.ejercicios_rutina %}
+    <div class="ejercicio-card">
+      <h3>{{ er.ejercicio.nombre }}</h3>
+      <p>{{ er.series }}x{{ er.repeticiones }} (Descanso: {{ er.descanso }}s)</p>
+      <button onclick="iniciarDescanso({{ er.descanso }})">⏱️ Iniciar descanso</button>
+    </div>
+  {% endfor %}
+
+  <script>
+  function iniciarDescanso(segundos) {
+    let tiempo = segundos;
+    const intervalo = setInterval(() => {
+      if (tiempo > 0) {
+        console.log("Descanso: " + tiempo + "s");
+        tiempo--;
+      } else {
+        clearInterval(intervalo);
+        alert("¡Descanso terminado! 💪");
+      }
+    }, 1000);
+  }
+  </script>
+</body>
+</html>
