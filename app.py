@@ -135,20 +135,19 @@ def iniciar_rutina(rutina_id):
 
 
 
-@app.route("/rutina_hoy/<usuario>")
-def rutina_hoy(usuario):
+@app.route("/rutinas/<usuario>")
+def rutinas(usuario):
     user = Usuario.query.filter_by(usuario=usuario).first()
     if not user:
         return "Usuario no encontrado"
 
-    dias = ["lunes","martes","miércoles","jueves","viernes","sábado","domingo"]
-    dia_actual = dias[datetime.today().weekday()]
+    # Traer todas las rutinas del usuario
+    rutinas = Rutina.query.filter_by(usuario_id=user.id).all()
+    if not rutinas:
+        return "No hay rutinas asignadas"
 
-    rutina = Rutina.query.filter_by(usuario_id=user.id, dia_semana=dia_actual).first()
-    if not rutina:
-        return f"No hay rutina asignada para {dia_actual}"
+    return render_template("rutinas.html", rutinas=rutinas)
 
-    return render_template("rutina_hoy.html", rutina=rutina)
 
 @app.route("/progreso")
 def progreso():
